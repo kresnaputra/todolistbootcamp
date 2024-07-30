@@ -1,9 +1,14 @@
+import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 
+const prisma = new PrismaClient();
+
 export async function GET() {
+  const todos = await prisma.todo.findMany();
+
   const result = {
     success: true,
-    message: "Berhasil di GET",
+    body: todos,
   };
 
   return NextResponse.json(result);
@@ -12,13 +17,26 @@ export async function GET() {
 export async function POST(request) {
   const body = await request.json();
 
-  console.log('data', body.data.name)
+  try {
+    const newTodo = await prisma.todo.create({
+      data: {
+        title: body.title,
+      },
+    });
 
-  const result = {
-    success: true,
-    message: "Berhasil di POST",
-    body: body.data.name
-  };
+    const result = {
+      success: true,
+      message: "Berhasil ditambahkan",
+      body: newTodo,
+    };
 
-  return NextResponse.json(result);
+    return NextResponse.json(result);
+  } catch (error) {
+    const result = {
+      success: false,
+      message: error.message,
+    };
+
+    return NextResponse.json(result).status(500);
+  }
 }
