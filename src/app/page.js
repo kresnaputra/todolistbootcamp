@@ -7,8 +7,6 @@ export default function Home() {
         To Do List
       </h1>
       <TodoList title="bersih - bersih" completed={false} />
-      <TodoList title="baca" completed={true} />
-      <TodoList title="olahraga" completed={false} />
     </div>
   );
 }
